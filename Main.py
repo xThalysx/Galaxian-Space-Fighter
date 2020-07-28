@@ -26,6 +26,7 @@ BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 
 
+#All files imported
 Background_File = 'C://Users//joeyf//Documents//Sandbox//Python Projects//Galaxian_Space_Fighter//Images//Space_Background.jpg'
 Background2_File = 'C://Users//joeyf//Documents//Sandbox//Python Projects//Galaxian_Space_Fighter//Images//Space_Background2.jpg'
 Background3_File = 'C://Users//joeyf//Documents//Sandbox//Python Projects//Galaxian_Space_Fighter//Images//Space_Background3.jpg'
@@ -57,7 +58,7 @@ Ability_Shield_File = 'C://Users//joeyf//Documents//Sandbox//Python Projects//Ga
 Black_Hole_File = 'C://Users//joeyf//Documents//Sandbox//Python Projects//Galaxian_Space_Fighter//Images//Black Hole.png'
 Game_Title_File = 'C://Users//joeyf//Documents//Sandbox//Python Projects//Galaxian_Space_Fighter//Images//Game Title.png'
 
-
+#Initialize Mixer to play music
 mixer.music.load(Music_File)
 mixer.music.set_volume(0.7)
 mixer.music.play(-1)
@@ -77,6 +78,7 @@ VolButtonX, VolButtonY = (120, 500)
 total_blaster = 1
 
 
+#All objects created
 Background = Image(Background_File, [0,0])
 Background2 = Image(Background2_File, [0,0])
 Background3 = Image(Background3_File, [0,0])
@@ -110,6 +112,7 @@ Vol10_Button = Image(Volume_10_File, [VolButtonX+500, VolButtonY])
 pygame.display.set_caption('Galaxian Space Fighter')
 
 
+#How to play function
 def HowToPlay():
     x, y = 50, 50
     click = False
@@ -149,7 +152,8 @@ def HowToPlay():
                     click = True
 
         pygame.display.update()
-
+        
+#Option function
 def Options():
     Option = True
     click = False
@@ -169,6 +173,7 @@ def Options():
 
         mx, my = pygame.mouse.get_pos()
 
+        #Create button objects
         button_1 = pygame.Rect(PBx, PBy, 225, 70)
         button_2 = pygame.Rect(VolButtonX, VolButtonY, 70, 70)
         button_3 = pygame.Rect(VolButtonX+100, VolButtonY, 70, 70)
@@ -200,6 +205,7 @@ def Options():
             if click:
                 mixer.music.set_volume(1)
 
+        #Draw button
         pygame.draw.rect(Screen, WHITE, button_1)
         pygame.draw.rect(Screen, WHITE, button_2)
         pygame.draw.rect(Screen, WHITE, button_3)
@@ -208,6 +214,7 @@ def Options():
         pygame.draw.rect(Screen, WHITE, button_6)
         pygame.draw.rect(Screen, WHITE, button_7)
 
+        #Blit the button images
         Screen.blit(Background3.image, Background3.rect)
         Screen.blit(Menu_Button.image, Menu_Button.rect)
         Screen.blit(OFF_Button.image, OFF_Button.rect)
@@ -219,6 +226,7 @@ def Options():
 
         pygame.display.update()
 
+#Game over: end the game
 def GameOver(PlayerSprite, AsteroidSprite, EnemySprite):
     collide_1 = pygame.sprite.groupcollide(PlayerSprite, AsteroidSprite, 1, 1)
     collide_2 = pygame.sprite.groupcollide(PlayerSprite, EnemySprite, 1, 1)
@@ -226,6 +234,7 @@ def GameOver(PlayerSprite, AsteroidSprite, EnemySprite):
     if collide_1 or collide_2:
         return True
 
+#Game over screen function
 def GameOverScreen():
     GameOver = True
     click = False
@@ -279,6 +288,7 @@ def GameOverScreen():
 
         pygame.display.update()
 
+#Pause function
 def pause():
     click = False
     pause = True
@@ -313,6 +323,7 @@ def pause():
         Screen.blit(Pause_Title.image, Pause_Title.rect)
         pygame.display.update()
 
+#Randomly spawn viruses on left, right or top side of screen
 def LeftRandPos():
     x_pos = random.randint(-600, -50)
     y_pos = random.randint(0, 650/2)
@@ -328,6 +339,7 @@ def TopRandPos():
     y_pos = random.randint(-100, -50)
     return x_pos, y_pos
 
+#The game function
 def Game():
     global Score
     game_over = False
@@ -349,6 +361,7 @@ def Game():
     # Player's Position on Screen
     x, y = ((WIDTH / 2) - 50 / 2), HEIGHT - 50
 
+    #Create object to store different types of sprites
     Player_Sprites = pygame.sprite.Group()
     Blaster_Sprites = pygame.sprite.Group()
     Asteroids_Sprites = pygame.sprite.Group()
@@ -367,7 +380,8 @@ def Game():
     Shield_Timer = 0
     Counter = 0
     Score = 0
-
+    
+    #Game starts
     while not game_over:
 
         clock.tick(FPS)
@@ -375,9 +389,11 @@ def Game():
         Counter += 1
         #print(Counter)
 
+        #Determines when to spawn
         if (int(Counter) % 200 == 0 and not (Counter <= 1)):
             Spawn = True
 
+        #Spawn roids and virus when Spawn = True (Makes game progressively harder)
         if (int(Counter) % 500 == 0 and not (Counter <= 1)):
             total_asteroid += 1
             total_enemy += 1
@@ -392,18 +408,20 @@ def Game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pause()
-
+        #Adds roid if list if list is less than total (True when a roid is killed or despawns)
         if len(Asteroids_Sprites) < total_asteroid:
             for i in range(total_asteroid - len(Asteroids_Sprites)):
                 x_pos, y_pos = TopRandPos()
                 enemy = Enemy(Asteroid1_File, [x_pos, y_pos])
                 Asteroids_Sprites.add(enemy)
-
+            
+        #A function to change amount of blasters
         if len(Blaster_Sprites) < total_blaster:
             for i in range(total_blaster):
                 blaster = Blaster(Blaster_File, [x, y])
                 Blaster_Sprites.add(blaster)
 
+        #Spawns viruses in random spots
         if len(Enemy_Sprites) < total_enemy:
             for i in range(total_enemy - len(Enemy_Sprites)):
                 randVal = random.randint(1,3)
@@ -418,6 +436,7 @@ def Game():
                 enemy1 = Enemy2(Enemy1_File, [x_pos, y_pos])
                 Enemy_Sprites.add(enemy1)
 
+        #Spawn a powerUP in a random spot
         if len(PowerUp_Sprites) < total_PowerUPs and Shield_Activated == False:
             for i in range(total_PowerUPs - len(PowerUp_Sprites)):
                 xPOW = random.randint(-600, -50)
@@ -425,6 +444,7 @@ def Game():
                 PowerUP_Def = PowerUP(PowerUP_Def_File, [xPOW, yPOW])
                 PowerUp_Sprites.add(PowerUP_Def)
 
+        #A, B, E, F checks if a collision occurs between two sprites. If true, depsawn sprite if parameter = 1
         E = pygame.sprite.groupcollide(Blaster_Sprites, Asteroids_Sprites, 1, 1)
 
         F = pygame.sprite.groupcollide(Blaster_Sprites, Enemy_Sprites, 1, 1)
@@ -437,11 +457,13 @@ def Game():
         A = pygame.sprite.groupcollide(Blaster_Sprites, PowerUp_Sprites, 1, 1)
         B = pygame.sprite.groupcollide(Player_Sprites, PowerUp_Sprites, 0, 1)
 
+        #Gives player powerup if true
         if A or B:
             Ability_Shield = Abilities(Ability_Shield_File, [x, y])
             Abilities_Sprites.add(Ability_Shield)
             Shield_Activated = True
 
+        #Activate shield
         if Shield_Activated == True:
             Shield_Timer += 1
             C = pygame.sprite.groupcollide(Abilities_Sprites, Enemy_Sprites, 0, 1)
@@ -451,7 +473,7 @@ def Game():
             if D:
                 Score += 1
 
-
+        #Shield timer. Deactivates when timer = 0
         if Shield_Timer == Shield_Ends:
             Shield_Activated = False
             Shield_Timer = 0
@@ -468,6 +490,7 @@ def Game():
         #Set Spawn = False after it updates (Pretty much an on/off switch)
         Spawn = False
 
+        #Draw Screen and sprites onto screen
         Screen.fill(WHITE)
         Screen.blit(Background.image, Background.rect)
         Blaster_Sprites.draw(Screen)
@@ -477,17 +500,20 @@ def Game():
         PowerUp_Sprites.draw(Screen)
         Abilities_Sprites.draw(Screen)
 
+        #Score text
         text = "Score: " + str(Score)
         label = myFont.render(text, 1, YELLOW)
         Screen.blit(label, (WIDTH - 250, HEIGHT - 40))
         #Screen.blit(Black_Hole.image, Black_Hole.rect)
 
+        #update game
         pygame.display.update()
 
         if (GameOver(Player_Sprites, Asteroids_Sprites, Enemy_Sprites)):
             game_over = True
             GameOverScreen()
 
+#Play different music functions
 def PlayMusic1():
     mixer.music.load(Music_File)
     mixer.music.set_volume(0.7)
@@ -498,6 +524,7 @@ def PlayMusic2():
     mixer.music.set_volume(0.1)
     mixer.music.play(-1)
 
+#Main Menu function
 def Main_Menu():
     click = False
     MainMenu = True
@@ -556,5 +583,5 @@ def Main_Menu():
 
         pygame.display.update()
 
-
+#boots game
 Main_Menu()
